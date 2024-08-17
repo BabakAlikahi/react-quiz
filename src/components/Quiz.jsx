@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import QUESTIONS from "../questions";
 import QuestionTimer from "./QuestionTimer";
@@ -9,12 +9,17 @@ function Quiz() {
   const activeQuestionIndex = userAnswers.length;
   const quizComplete = activeQuestionIndex === QUESTIONS.length;
 
-  function handelSelectAnswer(selectedAnswer) {
+  const handelSelectAnswer = useCallback(function handelSelectAnswer(
+    selectedAnswer,
+  ) {
     setUserAnswers((prevUserAnswers) => {
       return [...prevUserAnswers, selectedAnswer];
     });
-  }
+  }, []);
 
+  const handelSkipAnswer = useCallback(() => {
+    handelSelectAnswer(null);
+  }, []);
   if (quizComplete) {
     return (
       <div id="summary">
@@ -30,11 +35,10 @@ function Quiz() {
       className="mx-auto w-11/12 rounded-lg p-8 text-center lg:w-1/2"
       id="quiz"
     >
-      <QuestionTimer
-        timeOut={10000}
-        onTimeOut={() => {
-          handelSelectAnswer(null);
-        }}
+      <QuestionTimer 
+      key={activeQuestionIndex}
+      timeOut={10000} 
+      onTimeOut={handelSelectAnswer} 
       />
       <h2 className="mx-1 my-2 text-2xl text-slate-300">
         {QUESTIONS[activeQuestionIndex].text}

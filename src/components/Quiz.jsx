@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import QUESTIONS from "../questions";
+import QuestionTimer from "./QuestionTimer";
 import QuizComplete from "../assets/quiz-complete.png";
 
 function Quiz() {
@@ -29,6 +30,12 @@ function Quiz() {
       className="mx-auto w-11/12 rounded-lg p-8 text-center lg:w-1/2"
       id="quiz"
     >
+      <QuestionTimer
+        timeOut={10000}
+        onTimeOut={() => {
+          handelSelectAnswer(null);
+        }}
+      />
       <h2 className="mx-1 my-2 text-2xl text-slate-300">
         {QUESTIONS[activeQuestionIndex].text}
       </h2>

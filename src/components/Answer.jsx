@@ -33,6 +33,7 @@ function Answer({ answers, selectedAnswer, answerState, onSelect }) {
                 onSelect(answer);
               }}
               className={`answer-btn ${cssClasses}`}
+              disabled={answerState !== ""}
             >
               {answer}
             </button>

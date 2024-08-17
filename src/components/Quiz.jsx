@@ -7,30 +7,17 @@ import QuizComplete from "../assets/quiz-complete.png";
 
 function Quiz() {
   const [userAnswers, setUserAnswers] = useState([]);
-  const [answerState, setAnswerState] = useState("");
-  const activeQuestionIndex =
-    answerState === "" ? userAnswers.length : userAnswers.length - 1;
+  const activeQuestionIndex = userAnswers.length;
   const quizComplete = activeQuestionIndex === QUESTIONS.length;
 
   const handelSelectAnswer = useCallback(
     function handelSelectAnswer(selectedAnswer) {
-      setAnswerState("answered");
       setUserAnswers((prevUserAnswers) => {
         return [...prevUserAnswers, selectedAnswer];
       });
-      setTimeout(() => {
-        if (selectedAnswer === QUESTIONS[activeQuestionIndex].answers[0]) {
-          setAnswerState("correct");
-        } else {
-          setAnswerState("wrong");
-        }
-      }, 1000);
-
-      setTimeout(() => {
-        setAnswerState("");
-      }, 2000);
     },
-    [activeQuestionIndex],
+
+    [],
   );
 
   const handelSkipAnswer = useCallback(() => {
@@ -52,10 +39,7 @@ function Quiz() {
     >
       <Question
         key={activeQuestionIndex}
-        questionText={QUESTIONS[activeQuestionIndex].text}
-        answers={QUESTIONS[activeQuestionIndex].answers}
-        answerState={answerState}
-        selectedAnswer={userAnswers[userAnswers.length - 1]}
+        index={activeQuestionIndex}
         onSelectAnswer={handelSelectAnswer}
         handelSkipAnswer={handelSkipAnswer}
       />

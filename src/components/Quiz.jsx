@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from "react";
 import QUESTIONS from "../questions";
 
 import Question from "./Question";
-import QuizComplete from "../assets/quiz-complete.png";
+import Summery from "./Summery";
 
 function Quiz() {
   const [userAnswers, setUserAnswers] = useState([]);
@@ -24,12 +24,7 @@ function Quiz() {
     handelSelectAnswer(null);
   }, []);
   if (quizComplete) {
-    return (
-      <div id="summary">
-        <img src={QuizComplete} alt="Quiz complete" />
-        <h2>quiz complete</h2>
-      </div>
-    );
+    return <Summery userAnswers={userAnswers} />;
   }
 
   return (

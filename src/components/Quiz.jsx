@@ -1,9 +1,12 @@
 import { useState } from "react";
+
 import QUESTIONS from "../questions";
+import QuizComplete from "../assets/quiz-complete.png";
 
 function Quiz() {
   const [userAnswers, setUserAnswers] = useState([]);
   const activeQuestionIndex = userAnswers.length;
+  const quizComplete = activeQuestionIndex === QUESTIONS.length;
 
   function handelSelectAnswer(selectedAnswer) {
     setUserAnswers((prevUserAnswers) => {
@@ -11,6 +14,16 @@ function Quiz() {
     });
   }
 
+  if (quizComplete) {
+    return (
+      <div id="summary">
+        <img src={QuizComplete} alt="Quiz complete" />
+        <h2>quiz complete</h2>
+      </div>
+    );
+  }
+  const shuffleAnswers = QUESTIONS[activeQuestionIndex].answers;
+  shuffleAnswers.sort(() => Math.random() - 0.5);
   return (
     <div
       className="mx-auto w-11/12 rounded-lg p-8 text-center lg:w-1/2"
@@ -20,7 +33,7 @@ function Quiz() {
         {QUESTIONS[activeQuestionIndex].text}
       </h2>
       <ul className="mt-6 flex flex-col items-center gap-2">
-        {QUESTIONS[activeQuestionIndex].answers.map((answer) => (
+        {shuffleAnswers.map((answer) => (
           <li key={answer} className="mx-auto w-11/12 text-center">
             <button
               onClick={() => {

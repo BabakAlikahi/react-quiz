@@ -1,21 +1,37 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import QUESTIONS from "../questions";
-import QuestionTimer from "./QuestionTimer";
+
+import Question from "./Question";
 import QuizComplete from "../assets/quiz-complete.png";
 
 function Quiz() {
   const [userAnswers, setUserAnswers] = useState([]);
-  const activeQuestionIndex = userAnswers.length;
+  const [answerState, setAnswerState] = useState("");
+  const activeQuestionIndex =
+    answerState === "" ? userAnswers.length : userAnswers.length - 1;
   const quizComplete = activeQuestionIndex === QUESTIONS.length;
 
-  const handelSelectAnswer = useCallback(function handelSelectAnswer(
-    selectedAnswer,
-  ) {
-    setUserAnswers((prevUserAnswers) => {
-      return [...prevUserAnswers, selectedAnswer];
-    });
-  }, []);
+  const handelSelectAnswer = useCallback(
+    function handelSelectAnswer(selectedAnswer) {
+      setAnswerState("answered");
+      setUserAnswers((prevUserAnswers) => {
+        return [...prevUserAnswers, selectedAnswer];
+      });
+      setTimeout(() => {
+        if (selectedAnswer === QUESTIONS[activeQuestionIndex].answers[0]) {
+          setAnswerState("correct");
+        } else {
+          setAnswerState("wrong");
+        }
+      }, 1000);
+
+      setTimeout(() => {
+        setAnswerState("");
+      }, 2000);
+    },
+    [activeQuestionIndex],
+  );
 
   const handelSkipAnswer = useCallback(() => {
     handelSelectAnswer(null);
@@ -28,35 +44,21 @@ function Quiz() {
       </div>
     );
   }
-  const shuffleAnswers = QUESTIONS[activeQuestionIndex].answers;
-  shuffleAnswers.sort(() => Math.random() - 0.5);
+
   return (
     <div
       className="mx-auto w-11/12 rounded-lg p-8 text-center lg:w-1/2"
       id="quiz"
     >
-      <QuestionTimer
+      <Question
         key={activeQuestionIndex}
-        timeOut={10000}
-        onTimeOut={handelSelectAnswer}
+        questionText={QUESTIONS[activeQuestionIndex].text}
+        answers={QUESTIONS[activeQuestionIndex].answers}
+        answerState={answerState}
+        selectedAnswer={userAnswers[userAnswers.length - 1]}
+        onSelectAnswer={handelSelectAnswer}
+        handelSkipAnswer={handelSkipAnswer}
       />
-      <h2 className="mx-1 my-2 text-2xl text-slate-300">
-        {QUESTIONS[activeQuestionIndex].text}
-      </h2>
-      <ul className="mt-6 flex flex-col items-center gap-2">
-        {shuffleAnswers.map((answer) => (
-          <li key={answer} className="mx-auto w-11/12 text-center">
-            <button
-              onClick={() => {
-                handelSelectAnswer(answer);
-              }}
-              className="focus::text-white w-full rounded-3xl border-none bg-blue-300 px-8 py-4 text-xs text-slate-950 transition-all hover:bg-purple-800 hover:text-white focus:bg-purple-800"
-            >
-              {answer}
-            </button>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
